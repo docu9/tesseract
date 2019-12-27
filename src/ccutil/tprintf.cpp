@@ -66,3 +66,17 @@ DLLSYM void tprintf(const char *format, ...)
   }
   va_end(args);
 }
+ 
+
+
+// Trace printf
+void dbgprintf(const char *format, ...)
+{
+  
+
+  va_list args;            // variable args
+  va_start(args, format);  // variable list
+    vfprintf(stderr, format, args);
+  va_end(args);
+}
+ 
