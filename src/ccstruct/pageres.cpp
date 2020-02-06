@@ -797,7 +797,7 @@ void WERD_RES::ReplaceBestChoice(WERD_CHOICE* choice) {
   SetupBoxWord();
   // Make up a fake reject map of the right length to keep the
   // rejection pass happy.
-  reject_map.initialise(best_state.length());
+  reject_map.initialise(best_state.size());
   done = tess_accepted = tess_would_adapt = true;
   SetScriptPositions();
 }
@@ -900,8 +900,9 @@ void WERD_RES::FakeWordFromRatings(PermuterType permuter) {
   word_choice->set_permuter(permuter);
   for (int b = 0; b < num_blobs; ++b) {
     UNICHAR_ID unichar_id = UNICHAR_SPACE;
-    float rating = INT32_MAX;
-    float certainty = -INT32_MAX;
+    // Initialize rating and certainty like in WERD_CHOICE::make_bad().
+    float rating = WERD_CHOICE::kBadRating;
+    float certainty = -FLT_MAX;
     BLOB_CHOICE_LIST* choices = ratings->get(b, b);
     if (choices != nullptr && !choices->empty()) {
       BLOB_CHOICE_IT bc_it(choices);
@@ -974,7 +975,7 @@ void WERD_RES::MergeAdjacentBlobs(int index) {
   best_choice->remove_unichar_id(index + 1);
   rebuild_word->MergeBlobs(index, index + 2);
   box_word->MergeBoxes(index, index + 2);
-  if (index + 1 < best_state.length()) {
+  if (index + 1 < best_state.size()) {
     best_state[index] += best_state[index + 1];
     best_state.remove(index + 1);
   }
