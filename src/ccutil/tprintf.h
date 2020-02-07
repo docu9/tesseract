@@ -27,9 +27,10 @@ extern TESS_API void tprintf(  // Trace printf
     const char *format, ...);  // Message
 
 void dbgprintf(const char *format, ...);
+
 #define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
 
-#define DbgMsg(msg , args...) dbgprintf( "[%s:%d]  %s() :: " msg "\n" ,  __FILE__, __LINE__,      __func__ ,   ##args)
+#define DbgMsg(msg , args...) dbgprintf( "[%s:%d]  %s() :: " msg "\n" ,  __FILE__, __LINE__, __func__ ,   ##args)
 
 // int LogPrintStr(const std::string &str);
 

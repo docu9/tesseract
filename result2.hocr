@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+ <head>
+  <title></title>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+  <meta name='ocr-system' content='tesseract 5.0.0-alpha-630-gce019' />
+  <meta name='ocr-capabilities' content='ocr_page ocr_carea ocr_par ocr_line ocrx_word ocrp_wconf'/>
+ </head>
+ <body>
+  <div class='ocr_page' id='page_1' title='image "../test/t7.png"; bbox 0 0 423 80; ppageno 0'>
+   <div class='ocr_carea' id='block_1_1' title="bbox 24 21 373 53">
+    <p class='ocr_par' id='par_1_1' lang='eng' title="bbox 24 21 373 53">
+     <span class='ocr_line' id='line_1_1' title="bbox 24 21 373 53; baseline -0.02 -1; x_size 60.75; x_descenders 13.5; x_ascenders 15.75">
+      <span class='ocrx_word' id='word_1_1' title='bbox 24 21 140 53; x_wconf 0'>SUI</span>
+      <span class='ocrx_word' id='word_1_2' title='bbox 150 21 235 52; x_wconf 93' lang='kor'>이유정</span>
+      <span class='ocrx_word' id='word_1_3' title='bbox 257 28 276 44; x_wconf 54' lang='kor'>포</span>
+      <span class='ocrx_word' id='word_1_4' title='bbox 281 25 373 47; x_wconf 5' lang='kor'>45/1\</span>
+     </span>
+    </p>
+   </div>
+  </div>
+ </body>
+</html>

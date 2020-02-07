@@ -641,7 +641,7 @@ int main(int argc, char** argv) {
     // Set default language if none was given.
     lang = "eng";
   }
-
+  DbgMsg("imnage %s" , image);
   if (image == nullptr && !list_langs && !print_parameters)
     return EXIT_SUCCESS;
 
@@ -649,7 +649,6 @@ int main(int argc, char** argv) {
   // the TessBaseAPI object. This fixes the order of destructor calls:
   // first TessBaseAPI must be destructed, DawgCache must be the last object.
   tesseract::Dict::GlobalDawgCache();
-DbgMsg("a");
   // Avoid memory leak caused by auto variable when return is called.
   static tesseract::TessBaseAPI api;
 
@@ -659,7 +658,7 @@ DbgMsg("a");
                              argc - arg_i, &vars_vec, &vars_values, false);
 
   SetVariablesFromCLArgs(&api, argc, argv);
-DbgMsg("a");
+
   // SIMD settings might be overridden by config variable.
   tesseract::SIMDDetect::Update();
 
@@ -667,7 +666,6 @@ DbgMsg("a");
     PrintLangsList(&api);
     return EXIT_SUCCESS;
   }
-DbgMsg("a");
   if (init_failed) {
     fprintf(stderr, "Could not initialize tesseract.\n");
     return EXIT_FAILURE;
@@ -682,7 +680,6 @@ DbgMsg("a");
   }
 
   FixPageSegMode(&api, pagesegmode);
-DbgMsg("a");
   if (dpi) {
     char dpi_string[255];
     snprintf(dpi_string, 254, "%d", dpi);
@@ -691,7 +688,8 @@ DbgMsg("a");
 
   if (pagesegmode == tesseract::PSM_AUTO_ONLY) {
     int ret_val = EXIT_SUCCESS;
-
+    DbgMsg("PAGE MODE %d" , pagesegmode);
+    DbgMsg("pix load");
     Pix* pixs = pixRead(image);
     if (!pixs) {
       fprintf(stderr, "Leptonica can't process input file: %s\n", image);

@@ -834,6 +834,7 @@ static int SelectBestWords(double rating_ratio,
                            PointerVector<WERD_RES>* best_words) {
   // Process the smallest groups of words that have an overlapping word
   // boundary at the end.
+  DbgMsg("SelectBestWords ");
   GenericVector<WERD_RES*> out_words;
   // Index into each word vector (best, new).
   int b = 0, n = 0;

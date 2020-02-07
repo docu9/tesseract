@@ -1018,6 +1018,7 @@ bool TessBaseAPI::ProcessPagesFileList(FILE *flist,
       snprintf(pagename, sizeof(pagename), "%s", lines[page].c_str());
     }
     chomp_string(pagename);
+    DbgMsg("pix load");
     Pix *pix = pixRead(pagename);
     if (pix == nullptr) {
       tprintf("Image file %s cannot be read!\n", pagename);
