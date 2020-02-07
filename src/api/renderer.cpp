@@ -24,7 +24,7 @@
 #include <tesseract/baseapi.h>
 #include <tesseract/genericvector.h>
 #include <tesseract/renderer.h>
-
+#include "tprintf.h"           // for tprintf
 namespace tesseract {
 
 /**********************************************************************
@@ -72,6 +72,7 @@ void TessResultRenderer::insert(TessResultRenderer* next) {
 bool TessResultRenderer::BeginDocument(const char* title) {
   if (!happy_) return false;
   title_ = title;
+  DbgMsg("begin %s" , title);
   imagenum_ = -1;
   bool ok = BeginDocumentHandler();
   if (next_) {

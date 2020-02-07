@@ -632,7 +632,7 @@ int main(int argc, char** argv) {
   TIFFSetErrorHandler(Win32ErrorHandler);
   TIFFSetWarningHandler(Win32WarningHandler);
 #endif // HAVE_TIFFIO_H && _WIN32
-
+  DbgMsg("Main");
   ParseArgs(argc, argv, &lang, &image, &outputbase, &datapath, &dpi,
             &list_langs, &print_parameters, &vars_vec, &vars_values, &arg_i,
             &pagesegmode, &enginemode);
@@ -649,7 +649,7 @@ int main(int argc, char** argv) {
   // the TessBaseAPI object. This fixes the order of destructor calls:
   // first TessBaseAPI must be destructed, DawgCache must be the last object.
   tesseract::Dict::GlobalDawgCache();
-
+DbgMsg("a");
   // Avoid memory leak caused by auto variable when return is called.
   static tesseract::TessBaseAPI api;
 
@@ -659,7 +659,7 @@ int main(int argc, char** argv) {
                              argc - arg_i, &vars_vec, &vars_values, false);
 
   SetVariablesFromCLArgs(&api, argc, argv);
-
+DbgMsg("a");
   // SIMD settings might be overridden by config variable.
   tesseract::SIMDDetect::Update();
 
@@ -667,7 +667,7 @@ int main(int argc, char** argv) {
     PrintLangsList(&api);
     return EXIT_SUCCESS;
   }
-
+DbgMsg("a");
   if (init_failed) {
     fprintf(stderr, "Could not initialize tesseract.\n");
     return EXIT_FAILURE;
@@ -682,7 +682,7 @@ int main(int argc, char** argv) {
   }
 
   FixPageSegMode(&api, pagesegmode);
-
+DbgMsg("a");
   if (dpi) {
     char dpi_string[255];
     snprintf(dpi_string, 254, "%d", dpi);
@@ -763,13 +763,13 @@ int main(int argc, char** argv) {
   } else if (outputbase != nullptr) {
     PreloadRenderers(&api, &renderers, pagesegmode, outputbase);
   }
-
+DbgMsg("a");
   bool banner = false;
   if (outputbase != nullptr && strcmp(outputbase, "-") &&
       strcmp(outputbase, "stdout")) {
     banner = true;
   }
-
+DbgMsg("a");
   if (!renderers.empty()) {
     if (banner) PrintBanner();
 #ifdef DISABLED_LEGACY_ENGINE
@@ -777,10 +777,16 @@ int main(int argc, char** argv) {
       fprintf(stderr, "%s",osd_warning.c_str());
     }
 #endif
+    /**
+     * Process
+     * */
+    DbgMsg("processPages....");
     bool succeed = api.ProcessPages(image, nullptr, 0, renderers[0]);
     if (!succeed) {
       fprintf(stderr, "Error during processing.\n");
       return EXIT_FAILURE;
+    }else{
+      DbgMsg("processPages.... END");
     }
   }
 

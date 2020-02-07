@@ -1300,7 +1300,7 @@ void RecodeBeamSearch::DebugUnicharPath(
   double total_rating = 0.0;
   for (int c = 0; c < num_ids; ++c) {
     int coord = xcoords[c];
-    tprintf("%d %d=%s r=%g, c=%g, s=%d, e=%d, perm=%d\n", coord, unichar_ids[c],
+    DbgMsg("%d %d=%s r=%g, c=%g, s=%d, e=%d, perm=%d\n", coord, unichar_ids[c],
             unicharset->debug_str(unichar_ids[c]).c_str(), ratings[c],
             certs[c], path[coord]->start_of_word, path[coord]->end_of_word,
             path[coord]->permuter);

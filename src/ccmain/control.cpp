@@ -121,10 +121,12 @@ bool Tesseract::ProcessTargetWord(const TBOX& word_box,
                                   const TBOX& target_word_box,
                                   const char* word_config,
                                   int pass) {
+  DbgMsg("ProcessTargetWord")                                    ;
   if (word_config != nullptr) {
     if (word_box.major_overlap(target_word_box)) {
       if (backup_config_file_ == nullptr) {
         backup_config_file_ = kBackUpConfigFile;
+        DbgMsg("back %s" ,backup_config_file_);
         FILE* config_fp = fopen(backup_config_file_, "wb");
         if (config_fp == nullptr) {
           tprintf("Error, failed to open file \"%s\"\n", backup_config_file_);
@@ -158,15 +160,23 @@ void Tesseract::SetupAllWordsPassN(int pass_n,
                                    GenericVector<WordData>* words) {
   // Prepare all the words.
   PAGE_RES_IT page_res_it(page_res);
+  DbgMsg("SetupAllWordsPassN..");
+  int i=0;
   for (page_res_it.restart_page(); page_res_it.word() != nullptr;
        page_res_it.forward()) {
+    DbgMsg("aaa %p %d" ,target_word_box , i++) ;
     if (target_word_box == nullptr ||
         ProcessTargetWord(page_res_it.word()->word->bounding_box(),
                           *target_word_box, word_config, 1)) {
+                            DbgMsg("words add...");
+
+                            page_res_it.word()->word->bounding_box().print();
       words->push_back(WordData(page_res_it));
     }
   }
+  
   // Setup all the words for recognition with polygonal approximation.
+  DbgMsg("words size %d" , words->size());
   for (int w = 0; w < words->size(); ++w) {
     SetupWordPassN(pass_n, &(*words)[w]);
     if (w > 0) (*words)[w].prev_word = &(*words)[w - 1];
@@ -175,6 +185,7 @@ void Tesseract::SetupAllWordsPassN(int pass_n,
 
 // Sets up the single word ready for whichever engine is to be run.
 void Tesseract::SetupWordPassN(int pass_n, WordData* word) {
+  DbgMsg(" SetupWordPassN %d " ,pass_n); 
   if (pass_n == 1 || !word->word->done) {
     if (pass_n == 1) {
       word->word->SetupForRecognition(unicharset, this, BestPix(),
@@ -218,11 +229,14 @@ bool Tesseract::RecogAllWordsPassN(int pass_n, ETEXT_DESC* monitor,
   // (eg set_pass1 and set_pass2) and an intermediate adaption pass needs to be
   // added. The results will be significantly different with adaption on, and
   // deterioration will need investigation.
+  DbgMsg("RecogAllWordsPassN %d words %d" ,pass_n , words->size());
   pr_it->restart_page();
   for (int w = 0; w < words->size(); ++w) {
+    DbgMsg("www %d" , w);
     WordData* word = &(*words)[w];
     if (w > 0) word->prev_word = &(*words)[w - 1];
     if (monitor != nullptr) {
+      DbgMsg("have Monit");
       monitor->ocr_alive = true;
       if (pass_n == 1) {
         monitor->progress = 70 * w / words->size();
@@ -256,6 +270,7 @@ bool Tesseract::RecogAllWordsPassN(int pass_n, ETEXT_DESC* monitor,
       pr_it->forward();
     ASSERT_HOST(pr_it->word() != nullptr);
     bool make_next_word_fuzzy = false;
+   
   #ifndef DISABLED_LEGACY_ENGINE
     if (!AnyLSTMLang() &&
         ReassignDiacritics(pass_n, pr_it, &make_next_word_fuzzy)) {
@@ -305,7 +320,7 @@ bool Tesseract::recog_all_words(PAGE_RES* page_res,
                                 const char* word_config,
                                 int dopasses) {
   PAGE_RES_IT page_res_it(page_res);
-
+  DbgMsg("============= recog_all_words =================");
   if (tessedit_minimal_rej_pass1) {
     tessedit_test_adaption.set_value (true);
     tessedit_minimal_rejection.set_value (true);
@@ -1323,7 +1338,7 @@ void Tesseract::classify_word_and_language(int pass_n, PAGE_RES_IT* pr_it,
   WordRecognizer recognizer = pass_n == 1 ? &Tesseract::classify_word_pass1
                                           : &Tesseract::classify_word_pass2;
 #endif  // def DISABLED_LEGACY_ENGINE
-
+  DbgMsg("classify_word_and_language");
   // Best result so far.
   PointerVector<WERD_RES> best_words;
   // Points to the best result. May be word or in lang_words.
@@ -1331,7 +1346,7 @@ void Tesseract::classify_word_and_language(int pass_n, PAGE_RES_IT* pr_it,
   clock_t start_t = clock();
   const bool debug = classify_debug_level > 0 || multilang_debug_level > 0;
   if (debug) {
-    tprintf("%s word with lang %s at:",
+    DbgMsg("%s word with lang %s at:",
             word->done ? "Already done" : "Processing",
             most_recently_used_->lang.c_str());
     word->word->bounding_box().print();

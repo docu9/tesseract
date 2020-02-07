@@ -829,6 +829,7 @@ PageIterator* TessBaseAPI::AnalyseLayout(bool merge_similar_words) {
  * internal structures.
  */
 int TessBaseAPI::Recognize(ETEXT_DESC* monitor) {
+  DbgMsg("recognize ");
   if (tesseract_ == nullptr)
     return -1;
   if (FindLines() != 0)
@@ -850,6 +851,7 @@ int TessBaseAPI::Recognize(ETEXT_DESC* monitor) {
   } else
 #endif  // ndef DISABLED_LEGACY_ENGINE
   {
+    DbgMsg("lstm");
     page_res_ = new PAGE_RES(tesseract_->AnyLSTMLang(),
                              block_list_, &tesseract_->prev_word_best_choice_);
   }
@@ -874,6 +876,7 @@ int TessBaseAPI::Recognize(ETEXT_DESC* monitor) {
 
   if (truth_cb_ != nullptr) {
     tesseract_->wordrec_run_blamer.set_value(true);
+    DbgMsg(" aaa" );
     auto *page_it = new PageIterator(
             page_res_, tesseract_, thresholder_->GetScaleFactor(),
             thresholder_->GetScaledYResolution(),
@@ -909,7 +912,9 @@ int TessBaseAPI::Recognize(ETEXT_DESC* monitor) {
     // Now run the main recognition.
     bool wait_for_text = true;
     GetBoolVariable("paragraph_text_based", &wait_for_text);
+    DbgMsg("================= > wait for test %d" , wait_for_text);
     if (!wait_for_text) DetectParagraphs(false);
+    DbgMsg(" DetectParagraphs done...." );
     if (tesseract_->recog_all_words(page_res_, monitor, nullptr, nullptr, 0)) {
       if (wait_for_text) DetectParagraphs(true);
     } else {
@@ -1115,6 +1120,7 @@ bool TessBaseAPI::ProcessPagesInternal(const char* filename,
                                        const char* retry_config,
                                        int timeout_millisec,
                                        TessResultRenderer* renderer) {
+                                         DbgMsg("xxxx");
   bool stdInput = !strcmp(filename, "stdin") || !strcmp(filename, "-");
   if (stdInput) {
 #ifdef WIN32
@@ -1122,8 +1128,9 @@ bool TessBaseAPI::ProcessPagesInternal(const char* filename,
       tprintf("ERROR: cin to binary: %s", strerror(errno));
 #endif  // WIN32
   }
-
+   DbgMsg("ProcessPagesFileList");
   if (stream_filelist) {
+    DbgMsg("ProcessPagesFileList");
     return ProcessPagesFileList(stdin, nullptr, retry_config,
                                 timeout_millisec, renderer,
                                 tesseract_->tessedit_page_number);
@@ -1191,6 +1198,7 @@ bool TessBaseAPI::ProcessPagesInternal(const char* filename,
                     std::istreambuf_iterator<char>());
       s = u.c_str();
     }
+    DbgMsg("wil...one page");
     return ProcessPagesFileList(nullptr, &s, retry_config,
                                 timeout_millisec, renderer,
                                 tesseract_->tessedit_page_number);
@@ -1215,6 +1223,7 @@ bool TessBaseAPI::ProcessPagesInternal(const char* filename,
   }
 
   // Begin the output
+   DbgMsg("BeginDocument");
   if (renderer && !renderer->BeginDocument(document_title.c_str())) {
     pixDestroy(&pix);
     return false;
@@ -1244,9 +1253,11 @@ bool TessBaseAPI::ProcessPage(Pix* pix, int page_index, const char* filename,
   SetInputName(filename);
   SetImage(pix);
   bool failed = false;
-
+  DbgMsg("ProcessPage %d %s" ,page_index,filename );
+  
   if (tesseract_->tessedit_pageseg_mode == PSM_AUTO_ONLY) {
     // Disabled character recognition
+    DbgMsg(" aaa" );
     PageIterator* it = AnalyseLayout();
 
     if (it == nullptr) {
@@ -1255,6 +1266,7 @@ bool TessBaseAPI::ProcessPage(Pix* pix, int page_index, const char* filename,
       delete it;
     }
   } else if (tesseract_->tessedit_pageseg_mode == PSM_OSD_ONLY) {
+    DbgMsg(" aaa" );
     failed = FindLines() != 0;
   } else if (timeout_millisec > 0) {
     // Running with a timeout.
@@ -1262,11 +1274,12 @@ bool TessBaseAPI::ProcessPage(Pix* pix, int page_index, const char* filename,
     monitor.cancel = nullptr;
     monitor.cancel_this = nullptr;
     monitor.set_deadline_msecs(timeout_millisec);
-
+DbgMsg(" aaa" );
     // Now run the main recognition.
     failed = Recognize(&monitor) < 0;
   } else {
     // Normal layout and character recognition with no timeout.
+    DbgMsg(" aaa" );
     failed = Recognize(nullptr) < 0;
   }
 

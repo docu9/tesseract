@@ -617,6 +617,7 @@ void Tesseract::SetBlackAndWhitelist() {
                                      tessedit_char_whitelist.c_str(),
                                      tessedit_char_unblacklist.c_str());
   if (lstm_recognizer_) {
+    DbgMsg("lstm...");
     UNICHARSET& lstm_unicharset = lstm_recognizer_->GetUnicharset();
     lstm_unicharset.set_black_and_whitelist(tessedit_char_blacklist.c_str(),
                                             tessedit_char_whitelist.c_str(),

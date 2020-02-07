@@ -308,6 +308,9 @@ bool WERD_RES::SetupForRecognition(const UNICHARSET& unicharset_in,
                                    ROW *row, const BLOCK* block) {
   auto norm_mode_hint =
       static_cast<tesseract::OcrEngineMode>(norm_mode);
+  DbgMsg("SetupForRecognition");
+  if(norm_box)
+    norm_box->print();
   tesseract = tess;
   POLY_BLOCK* pb = block != nullptr ? block->pdblk.poly_block() : nullptr;
   if ((norm_mode_hint != tesseract::OEM_LSTM_ONLY &&
@@ -327,10 +330,14 @@ bool WERD_RES::SetupForRecognition(const UNICHARSET& unicharset_in,
   chopped_word->BLNormalize(block, row, pix, word->flag(W_INVERSE),
                             word_xheight, baseline_shift, numeric_mode,
                             norm_mode_hint, norm_box, &denorm);
+  if(norm_box)
+    norm_box->print();
+  
   blob_row = row;
   SetupBasicsFromChoppedWord(unicharset_in);
   SetupBlamerBundle();
   int num_blobs = chopped_word->NumBlobs();
+  DbgMsg("num_blobs %d" ,num_blobs );
   ratings = new MATRIX(num_blobs, kWordrecMaxNumJoinChunks);
   tess_failed = false;
   return true;
@@ -400,9 +407,11 @@ void WERD_RES::SetupBlobWidthsAndGaps() {
   blob_widths.truncate(0);
   blob_gaps.truncate(0);
   int num_blobs = chopped_word->NumBlobs();
+  
   for (int b = 0; b < num_blobs; ++b) {
     TBLOB *blob = chopped_word->blobs[b];
     TBOX box = blob->bounding_box();
+    
     blob_widths.push_back(box.width());
     if (b + 1 < num_blobs) {
       blob_gaps.push_back(

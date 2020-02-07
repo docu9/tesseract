@@ -118,3 +118,8 @@ times.txt
 /*.snap
 /*_source.tar.bz2
 result/*
+result2.txt.osd
+result2.txt.txt
+unittest/third_party/utf/.deps/rune.Po
+unittest/util/utf8/.deps/unilib.Po
+unittest/util/utf8/.deps/unicodetext.Po
