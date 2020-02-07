@@ -1,7 +1,6 @@
 #!/bin/bash
-RESULT=result2.txt
+RESULT=result2
 rm -f ${RESULT}
-make -j4
 TEST_DIR=../test
 ./tesseract ${TEST_DIR}/t7.png ${RESULT} \
     --tessdata-dir ${PWD}/../tessdata_fast \
